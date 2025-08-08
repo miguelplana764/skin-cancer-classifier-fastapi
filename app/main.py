@@ -13,6 +13,8 @@ app = FastAPI()
 
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+os.makedirs("app/uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="app/uploads"), name="uploads")
 
 
@@ -26,7 +28,6 @@ async def model_info(request: Request):
 
 @app.post("/upload-image", response_class=HTMLResponse)
 async def upload_image(request: Request, file: UploadFile = File(...)):
-    os.makedirs("app/uploads", exist_ok=True)
 
     unique_filename = f"{uuid.uuid4().hex}_{file.filename}"
     file_path = f"app/uploads/{unique_filename}"

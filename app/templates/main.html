@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skin Cancer Classifier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    ul {
+      padding-left: 20px; /* Adjusts list indentation */
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      text-align: center;
+      padding: 8px;
+    }
+    th {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Skin Cancer Classifier</h1>
+      <p class="subtitle">AI-powered diagnostic tool for classifying skin lesions</p>
+      <p class="intro">
+        This application uses a deep learning model to classify images of skin lesions into seven categories:
+        Actinic Keratoses and Intraepithelial Carcinoma (AKIEC), Basal Cell Carcinoma (BCC), Benign Keratosis-like Lesions (BKL),
+        Dermatofibroma (DF), Melanoma (MEL), Melanocytic Nevi (NV), and Vascular Lesions (VASC).
+        <br><br>
+        <a href="/model-info" class="tech-link">View technical details of the model</a>
+      </p>
+    </header>
+
+    <br>
+
+    <section class="upload-section">
+      <form action="/upload-image" method="post" enctype="multipart/form-data" id="upload-form">
+        <label for="file-input">Upload an image of a skin lesion:</label>
+        <input type="file" name="file" id="file-input" accept="image/*" required>
+      </form>
+    </section>
+
+    {% if image_path %}
+    <section class="image-section">
+      <h2>Uploaded Image</h2>
+      <img src="{{ image_path }}" alt="Uploaded image">
+
+      <br>
+
+      <form action="/predict" method="post">
+        <input type="hidden" name="image_path" value="{{ image_path }}">
+        <button type="submit">Classify</button>
+      </form>
+    </section>
+    {% endif %}
+
+    {% if label %}
+    <section class="result-section">
+      <h2>Prediction Result</h2>
+      <p><strong>Class:</strong> {{ label }}</p>
+      <p><strong>Confidence:</strong> {{ confidence }}</p>
+      <div class="confidence-bar-container">
+        <div class="confidence-bar" style="width: {{ confidence }}"></div>
+      </div>
+    </section>
+
+    <br>
+
+    <section class="all-predictions">
+      <h3>Class Probabilities</h3>
+      <canvas id="probChart" width="400" height="200"></canvas>
+    </section>
+
+    <br>
+
+    <section class="descriptions">
+      <h2>Condition Descriptions</h2>
+      <ul>
+        <li><strong>Actinic Keratoses and Intraepithelial Carcinoma (AKIEC):</strong> Precancerous lesions with potential to develop into squamous cell carcinoma. Medical consultation is advised.</li>
+        <li><strong>Basal Cell Carcinoma (BCC):</strong> A common form of skin cancer that grows slowly and rarely spreads. Early removal is usually curative.</li>
+        <li><strong>Benign Keratosis-like Lesions (BKL):</strong> Non-cancerous growths that include seborrheic keratoses. Generally harmless but may resemble melanoma.</li>
+        <li><strong>Dermatofibroma (DF):</strong> Benign fibrous skin lesion. Usually requires no treatment unless symptomatic.</li>
+        <li><strong>Melanoma (MEL):</strong> The most dangerous type of skin cancer. Requires urgent medical intervention and possible surgical excision.</li>
+        <li><strong>Melanocytic Nevi (NV):</strong> Common moles. Benign, but atypical changes should be monitored.</li>
+        <li><strong>Vascular Lesions (VASC):</strong> Includes angiomas and hemorrhagic lesions. Usually benign but should be examined by a specialist if irregular.</li>
+      </ul>
+    </section>
+    {% endif %}
+
+    <footer>
+      <p>&copy; 2025 SkinAI Diagnostics. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("file-input").addEventListener("change", function () {
+      document.getElementById("upload-form").submit();
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    {% if predictions %}
+    const labels = {{ predictions | map(attribute="label") | list | tojson }};
+    const data = {{ predictions | map(attribute="confidence") | list | tojson }};
+
+    const ctx = document.getElementById('probChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Confidence',
+          data: data.map(x => x * 100),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+    {% endif %}
+  </script>
+</body>
+</html>

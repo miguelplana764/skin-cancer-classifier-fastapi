@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables files
+.env
+*.env
+
+# VSCode settings
+.vscode/
+
+# MacOS files
+.DS_Store
+
+# Logs
+*.log
+
+# Model files
+app/model/efficientnetv2s.h5
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Build / distribution folders
+build/
+dist/
+*.egg-info/
+
+# Pytest cache
+.pytest_cache/

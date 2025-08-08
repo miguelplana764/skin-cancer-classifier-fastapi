@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Model Technical Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    ul {
+      padding-left: 20px; /* Adjusts list indentation */
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      text-align: center;
+      padding: 8px;
+    }
+    th {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Technical Details of the Skin Cancer Classifier</h1>
+      <p class="subtitle">Dataset, training setup, model architecture and performance metrics</p>
+    </header>
+
+    <p><a href="/" class="back-link">&#8592; Back to main page</a></p>
+
+    <br>
+    
+    <section>
+      <h2>Dataset</h2>
+      <p>
+        This model was trained using the public dataset
+        <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T" target="_blank">HAM10000</a>,
+        which contains more than 10,000 dermatoscopic images of skin lesions categorized into seven classes:
+      </p>
+      <ul>
+        <li><strong>AKIEC</strong>: Actinic keratoses</li>
+        <li><strong>BCC</strong>: Basal cell carcinoma</li>
+        <li><strong>BKL</strong>: Benign keratosis-like lesions</li>
+        <li><strong>DF</strong>: Dermatofibroma</li>
+        <li><strong>MEL</strong>: Melanoma</li>
+        <li><strong>NV</strong>: Melanocytic nevi</li>
+        <li><strong>VASC</strong>: Vascular lesions</li>
+      </ul>
+    </section>
+
+    <br>
+
+    <section>
+      <h2>Training Environment</h2>
+      <p>
+        The model was trained in Python using <strong>TensorFlow 2.10.0</strong> with GPU acceleration.
+        It was deployed inside a Docker container based on the official TensorFlow GPU image.
+        The environment was set up to install dependencies from a <code>requirements.txt</code> file
+        and serve the application via <strong>FastAPI</strong> and <strong>Uvicorn</strong>.
+      </p>
+    </section>
+
+    <br>
+
+    <section>
+      <h2>Model Architecture</h2>
+      <p>
+        The base model is <strong>EfficientNetV2S</strong>, selected after experimentation with different architectures
+        available in the project
+        <a href="https://github.com/miguelplana764/skin-cancer-xai-universidad" target="_blank">
+          Skin Cancer XAI - Universidad
+        </a>.
+      </p>
+      <p>
+        EfficientNetV2S is a convolutional neural network optimized for both speed and accuracy,
+        with a total of <strong>20.5 million parameters</strong>.
+      </p>
+    </section>
+
+    <br>
+
+    <section>
+      <h2>Performance Metrics</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1-score</th>
+            <th>Support</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>AKIEC</td><td>0.89</td><td>0.48</td><td>0.63</td><td>33</td></tr>
+          <tr><td>BCC</td><td>0.93</td><td>0.80</td><td>0.86</td><td>51</td></tr>
+          <tr><td>BKL</td><td>0.69</td><td>0.85</td><td>0.76</td><td>110</td></tr>
+          <tr><td>DF</td><td>0.77</td><td>0.83</td><td>0.80</td><td>12</td></tr>
+          <tr><td>MEL</td><td>0.71</td><td>0.68</td><td>0.69</td><td>111</td></tr>
+          <tr><td>NV</td><td>0.94</td><td>0.94</td><td>0.94</td><td>671</td></tr>
+          <tr><td>VASC</td><td>0.92</td><td>0.86</td><td>0.89</td><td>14</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Accuracy</th>
+            <td colspan="4">0.88</td>
+          </tr>
+          <tr>
+            <th>Macro avg</th>
+            <td>0.84</td><td>0.78</td><td>0.80</td><td>1002</td>
+          </tr>
+          <tr>
+            <th>Weighted avg</th>
+            <td>0.88</td><td>0.88</td><td>0.88</td><td>1002</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <br>
+
+    <section>
+      <h2>Calibration</h2>
+      <p>
+        To improve reliability in medical contexts, the model was calibrated using <strong>Temperature Scaling (T-scaling)</strong>.
+        The optimal temperature parameter was determined by minimizing the <strong>Expected Calibration Error (ECE)</strong>,
+        ensuring that the predicted probabilities better match the actual likelihood of each class.
+      </p>
+    </section>
+
+    <br>
+
+    <p><a href="/" class="back-link">&#8592; Back to main page</a></p>
+
+    <footer>
+      <p>&copy; 2025 SkinAI Diagnostics. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>
